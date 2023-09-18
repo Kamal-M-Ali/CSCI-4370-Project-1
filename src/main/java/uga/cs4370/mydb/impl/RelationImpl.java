@@ -13,7 +13,7 @@ public class RelationImpl implements Relation {
     private List<Type> types;
     private List<List<Cell>> rows = new ArrayList<>();
 
-    RelationImpl(String name, List<String> attrs, List<Type> types)
+    public RelationImpl(String name, List<String> attrs, List<Type> types)
     {
         this.name = name;
         this.attrs = attrs;
@@ -61,6 +61,8 @@ public class RelationImpl implements Relation {
 
     @Override
     public void insert(Cell... cells) throws IllegalArgumentException {
+        if (attrs.isEmpty() || types.isEmpty())
+            throw new IllegalArgumentException();
         List<Cell> row = new ArrayList<>();
 
         for (int i = 0; i < cells.length; i++) {
@@ -73,6 +75,8 @@ public class RelationImpl implements Relation {
 
     @Override
     public void insert(List<Cell> cells) throws IllegalArgumentException {
+        if (attrs.isEmpty() || types.isEmpty())
+            throw new IllegalArgumentException();
         List<Cell> row = new ArrayList<>();
 
         for (int i = 0; i < cells.size(); i++) {
@@ -85,7 +89,27 @@ public class RelationImpl implements Relation {
 
     @Override
     public void print() {
+        System.out.println(name);
 
+        // print column names
+        if (!attrs.isEmpty()) {
+            System.out.print("| ");
+            for (String attr : attrs)
+                System.out.print(attr + " | ");
+            System.out.println();
+        }
+
+        // print the rows
+        if (rows.isEmpty()) {
+            System.out.println("empty set");
+        } else {
+            for (List<Cell> row : rows) {
+                System.out.print("| ");
+                for (Cell cell : row)
+                    System.out.print(cell + " | ");
+                System.out.println();
+            }
+        }
     }
 
     /**
