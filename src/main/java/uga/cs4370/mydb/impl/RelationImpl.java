@@ -91,6 +91,8 @@ public class RelationImpl implements Relation {
     public void print() {
         System.out.println(name);
 
+        // better way ot format https://stackoverflow.com/questions/18672643/how-to-print-a-table-of-information-in-java
+
         // print column names
         if (!attrs.isEmpty()) {
             System.out.print("| ");
