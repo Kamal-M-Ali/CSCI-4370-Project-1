@@ -27,5 +27,6 @@ public class Main
 
         RA ra = new RAImpl();
         ra.select(test, (List<Cell> row) -> row.contains(new Cell("Jane Doe"))).print();
+        ra.select(test, (List<Cell> row) -> row.get(test.getAttrIndex("Name")).getAsString().equals("Jane Doe")).print();
     }
 }
