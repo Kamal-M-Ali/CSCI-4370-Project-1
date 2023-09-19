@@ -26,13 +26,6 @@ public class Main
         System.out.println();
 
         RA ra = new RAImpl();
-        ra.select(test, (List<Cell> row) -> {
-            boolean hasName = false;
-            for (Cell cell : row) {
-                if (cell.getType() == Type.STRING && cell.getAsString().equals("Jane Doe"))
-                    return true;
-            }
-            return false;
-        }).print();
+        ra.select(test, (List<Cell> row) -> row.contains(new Cell("Jane Doe"))).print();
     }
 }
