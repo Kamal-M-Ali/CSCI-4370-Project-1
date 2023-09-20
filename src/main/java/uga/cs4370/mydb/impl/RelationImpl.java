@@ -106,7 +106,7 @@ public class RelationImpl implements Relation {
             }
         }
 
-        // build the header separtor
+        // build the separator string
         StringBuilder separator = new StringBuilder().append("+--");
         for (int i = 0; i < length.length; ++i) {
             separator.append(String.format("%0" + (length[i] + 2) + "d", 0).replace("0", "-"))
@@ -116,12 +116,8 @@ public class RelationImpl implements Relation {
         // build the format string
         StringBuilder formatBuilder = new StringBuilder().append("|  ");
         for (int i = 0; i < attrs.size(); ++i) {
-            if (i % 2 == 1)
-                formatBuilder.append("|  ");
-            formatBuilder.append("%-").append(length[i] + 2).append("s");
-            if (i % 2 == 1 || i + 1 == attrs.size())
-                formatBuilder.append("|  ");
-
+            formatBuilder.append("%-").append(length[i] + 2).append("s")
+                    .append(i + 1 != length.length ? "|  " : "|");
         }
         String format = formatBuilder.toString();
 
