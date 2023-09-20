@@ -89,29 +89,68 @@ public class RelationImpl implements Relation {
 
     @Override
     public void print() {
-        System.out.println(name);
+        System.out.println(name + ":");
+        // check if array is empty
+        if (attrs.isEmpty())
+            return;
 
-        // better way ot format https://stackoverflow.com/questions/18672643/how-to-print-a-table-of-information-in-java
-
-        // print column names
-        if (!attrs.isEmpty()) {
-            System.out.print("| ");
-            for (String attr : attrs)
-                System.out.print(attr + " | ");
-            System.out.println();
-        }
-
-        // print the rows
+        // get the largest size of each element in each row
+        int[] length = new int[attrs.size()];
         if (rows.isEmpty()) {
-            System.out.println("empty set");
+            for (int i = 0; i < attrs.size(); ++i)
+                length[i] = attrs.get(i).length();
         } else {
             for (List<Cell> row : rows) {
-                System.out.print("| ");
-                for (Cell cell : row)
-                    System.out.print(cell + " | ");
-                System.out.println();
+                for (int i = 0; i < row.size(); ++i)
+                    length[i] = Math.max(length[i], row.get(i).toString().length());
             }
         }
+
+        // build the header separtor
+        StringBuilder separator = new StringBuilder().append("+--");
+        for (int i = 0; i < length.length; ++i) {
+            separator.append(String.format("%0" + (length[i] + 2) + "d", 0).replace("0", "-"))
+                    .append((i + 1 != length.length) ? "+--" : "+");
+        }
+
+        // build the format string
+        StringBuilder formatBuilder = new StringBuilder().append("|  ");
+        for (int i = 0; i < attrs.size(); ++i) {
+            if (i % 2 == 1)
+                formatBuilder.append("|  ");
+            formatBuilder.append("%-").append(length[i] + 2).append("s");
+            if (i % 2 == 1 || i + 1 == attrs.size())
+                formatBuilder.append("|  ");
+
+        }
+        String format = formatBuilder.toString();
+
+        // print the table header
+        System.out.println(separator);
+        System.out.printf((format) + "%n", attrs.toArray());
+        System.out.println(separator);
+
+        // generate the table string
+        StringBuilder table = new StringBuilder();
+        if (rows.isEmpty()) {
+            // only print the formatted empty set string
+            int padding = (separator.length() - 11) / 2; // subtract length of "|Empty set|"
+            String pad = String.format("%0" + padding + "d", 0).replace("0", " ");
+
+            // odd num + even num = odd number, then need additional white space because of integer division
+            System.out.print("|" + pad + "Empty set" + pad + (separator.length() % 2 == 0 ? " |" : "|") );
+        } else {
+            // append each row to the table string
+            for (int i = 0; i < rows.size(); ++i) {
+                table.append(String.format(format, rows.get(i).toArray()));
+                if (i + 1 != rows.size())
+                    table.append("\n");
+            }
+        }
+
+        // print the table body
+        System.out.println(table);
+        System.out.println(separator);
     }
 
     /**
