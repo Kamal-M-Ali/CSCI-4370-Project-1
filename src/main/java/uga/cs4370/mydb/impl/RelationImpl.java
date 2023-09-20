@@ -134,7 +134,7 @@ public class RelationImpl implements Relation {
             String pad = String.format("%0" + padding + "d", 0).replace("0", " ");
 
             // odd num + even num = odd number, then need additional white space because of integer division
-            System.out.print("|" + pad + "Empty set" + pad + (separator.length() % 2 == 0 ? " |" : "|") );
+            System.out.println("|" + pad + "Empty set" + pad + (separator.length() % 2 == 0 ? " |" : "|") );
         } else {
             // append each row to the table string
             for (int i = 0; i < rows.size(); ++i) {
@@ -142,10 +142,12 @@ public class RelationImpl implements Relation {
                 if (i + 1 != rows.size())
                     table.append("\n");
             }
+
+            // print the table body
+            System.out.println(table);
         }
 
-        // print the table body
-        System.out.println(table);
+        // print the separator at the bottom of the table
         System.out.println(separator);
     }
 
