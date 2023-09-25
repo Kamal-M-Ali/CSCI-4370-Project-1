@@ -7,7 +7,8 @@ import java.util.List;
 
 public class RAImpl implements RA {
     @Override
-    public Relation select(Relation rel, Predicate p) {
+    public Relation select(Relation rel, Predicate p)
+    {
         Relation res = new RelationImpl(rel.getName(), rel.getAttrs(), rel.getTypes());
         for (List<Cell> row : rel.getRows()) {
             if (p.check(row))
@@ -17,7 +18,7 @@ public class RAImpl implements RA {
     }
 
     @Override
-    public Relation project(Relation rel, List<String> attrs)
+    public Relation project(Relation rel, List<String> attrs) throws IllegalArgumentException
     {
         List<Type> types = new ArrayList<>();
         for (String attr : attrs) {
@@ -44,7 +45,8 @@ public class RAImpl implements RA {
      * @throws IllegalArgumentException //If rel1 and rel2 are not compatible.
      */
     @Override
-    public Relation union(Relation rel1, Relation rel2) throws IllegalArgumentException{
+    public Relation union(Relation rel1, Relation rel2) throws IllegalArgumentException
+    {
         Relation res = new RelationImpl("Union", rel1.getAttrs(), rel1.getTypes());
         // Check compatible
         if (rel1.getAttrs().size() != rel2.getAttrs().size())
@@ -79,7 +81,8 @@ public class RAImpl implements RA {
      * @throws IllegalArgumentException //If rel1 and rel2 are not compatible.
      */
     @Override
-    public Relation diff(Relation rel1, Relation rel2) throws IllegalArgumentException{
+    public Relation diff(Relation rel1, Relation rel2) throws IllegalArgumentException
+    {
         Relation repeat = new RelationImpl("Repeat", rel1.getAttrs(), rel1.getTypes());
         Relation res = new RelationImpl("Diff", rel1.getAttrs(), rel1.getTypes());
         // Check compatible
@@ -118,7 +121,8 @@ public class RAImpl implements RA {
     }
 
     @Override
-    public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
+    public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) throws IllegalArgumentException
+    {
         if (origAttr.size() != renamedAttr.size())
             throw new IllegalArgumentException("Original attributes and renamed attribute size mismatch.");
 
@@ -146,7 +150,8 @@ public class RAImpl implements RA {
     }
 
     @Override
-    public Relation cartesianProduct(Relation rel1, Relation rel2) {
+    public Relation cartesianProduct(Relation rel1, Relation rel2) throws IllegalArgumentException
+    {
         for (String attr : rel1.getAttrs()) {
             if (rel2.hasAttr(attr))
                 throw new IllegalArgumentException("Cartesian product cannot contain common attributes.");
@@ -209,6 +214,6 @@ public class RAImpl implements RA {
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p)
     {
-        return select(cartesianProduct(rel1, rel2), p);
+        return null;
     }
 }
