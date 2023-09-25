@@ -55,7 +55,7 @@ public class RelationImpl implements Relation {
 
     @Override
     public int getAttrIndex(String attr) throws IllegalArgumentException {
-        if (!attrs.contains(attr)) throw new IllegalArgumentException();
+        if (!attrs.contains(attr)) throw new IllegalArgumentException("Relation does not contain attribute.");
         return attrs.indexOf(attr);
     }
 
@@ -67,7 +67,7 @@ public class RelationImpl implements Relation {
 
         for (int i = 0; i < cells.length; i++) {
             if (cells[i].getType() != types.get(i))
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Insert cell type mismatch.");
             row.add(cells[i]);
         }
         insertWithCheck(row);
@@ -81,7 +81,7 @@ public class RelationImpl implements Relation {
 
         for (int i = 0; i < cells.size(); i++) {
             if (cells.get(i).getType() != types.get(i))
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Insert cell type mismatch.");
             row.add(cells.get(i));
         }
         insertWithCheck(row);
@@ -155,7 +155,7 @@ public class RelationImpl implements Relation {
     private void insertWithCheck(List<Cell> row) throws IllegalArgumentException {
         for (List<Cell> existingRow : rows) {
             if (existingRow.equals(row))
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Attempt to insert equal tuple");
         }
         rows.add(row);
     }

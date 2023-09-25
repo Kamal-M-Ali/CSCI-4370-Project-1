@@ -21,6 +21,7 @@ public class RAImpl implements RA {
     {
         List<Type> types = new ArrayList<>();
         for (String attr : attrs) {
+            // using .getAttrIndex() will throw automatically if attr doesnt exist
             types.add(rel.getTypes().get(rel.getAttrIndex(attr)));
         }
 
@@ -47,7 +48,7 @@ public class RAImpl implements RA {
         Relation res = new RelationImpl("Union", rel1.getAttrs(), rel1.getTypes());
         // Check compatible
         if (rel1.getAttrs().size() != rel2.getAttrs().size())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Incompatible relations to union.");
 
         // insert rows in Relation 1
         for (List<Cell> row1 : rel1.getRows()) {
@@ -83,7 +84,7 @@ public class RAImpl implements RA {
         Relation res = new RelationImpl("Diff", rel1.getAttrs(), rel1.getTypes());
         // Check compatible
         if(rel1.getAttrs().size() != rel2.getAttrs().size())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Incompatible relations to  diff.");
 
         // insert the unique rows in Relation 1
         for (List<Cell> row1 : rel1.getRows()) {
@@ -119,7 +120,7 @@ public class RAImpl implements RA {
     @Override
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
         if (origAttr.size() != renamedAttr.size())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Original attributes and renamed attribute size mismatch.");
 
         List<String> attrs = new ArrayList<>();
         int renamed = 0;
@@ -134,8 +135,8 @@ public class RAImpl implements RA {
             }
         }
 
-        if (origAttr.size() != renamed) // there were excess arguments in orig not found in relation
-            throw new IllegalArgumentException();
+        if (origAttr.size() != renamed)
+            throw new IllegalArgumentException("Attributes to rename not found in original relation.");
 
         Relation res = new RelationImpl(rel.getName() + "|Renamed", attrs, rel.getTypes());
         for (List<Cell> row : rel.getRows())
@@ -146,6 +147,11 @@ public class RAImpl implements RA {
 
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
+        for (String attr : rel1.getAttrs()) {
+            if (rel2.hasAttr(attr))
+                throw new IllegalArgumentException("Cartesian product cannot contain common attributes.");
+        }
+
         List<String> resultAttrs = new ArrayList<>(rel1.getAttrs());
         resultAttrs.addAll(rel2.getAttrs());
 
@@ -183,7 +189,7 @@ public class RAImpl implements RA {
                 for (String attr : rel1.getAttrs()) {
                     int index1 = rel1.getAttrs().indexOf(attr);
                     int index2 = rel2.getAttrs().indexOf(attr);
-                    if (!row1.get(index1).getAsString().equals(row2.get(index2).getAsString())) {
+                    if (!row1.get(index1).equals(row2.get(index2))) {
                         isMatch = false;
                         break;
                     }

@@ -46,7 +46,7 @@ public class Main
         try {
             unionRA.union(test, test1).print(); // not compatible
         } catch(IllegalArgumentException e) {
-            System.out.println("The relations aren't compatible.");
+            System.out.println(e.getMessage());
         }
 
         RA diffRA = new RAImpl();
@@ -54,12 +54,12 @@ public class Main
         try {
             diffRA.diff(test, test1).print(); // not compatible
         } catch(IllegalArgumentException e) {
-            System.out.println("The relations aren't compatible.");
+            System.out.println(e.getMessage());
         }
 
         ra.cartesianProduct(test, test3).print();
         ra.project(test3, List.of("Name")).print();
         ra.rename(test3, List.of("Name"), List.of("Full Name")).print();
-        //ra.join(test, test).print();
+        ra.join(test, test).print();
     }
 }
