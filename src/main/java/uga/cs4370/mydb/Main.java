@@ -82,48 +82,135 @@ public class Main
                 new Cell("1987-07-06"),
                 new Cell("'Psychology'")));
 
+        // courses sample data
+        courses.insert(List.of(
+                new Cell(12389),
+                new Cell("Algorithms"),
+                new Cell(4)));
+        courses.insert(List.of(
+                new Cell(56780),
+                new Cell("Spanish I"),
+                new Cell(3)));
+        courses.insert(List.of(
+                new Cell(34560),
+                new Cell("Statistics"),
+                new Cell(3)));
+        courses.insert(List.of(
+                new Cell(11203),
+                new Cell("Calculus I"),
+                new Cell(4)));
+        courses.insert(List.of(
+                new Cell(87654),
+                new Cell("English"),
+                new Cell(3)));
+        courses.insert(List.of(
+                new Cell(98763),
+                new Cell("Math"),
+                new Cell(2)));
+        courses.insert(List.of(
+                new Cell(23489),
+                new Cell("Business"),
+                new Cell(4)));
 
-        INSERT INTO Courses (CourseId, CName, Credits)
-        VALUES
-                ('12389','Algorithms','4'),
-                ('56780','Spanish I','3'),
-        ('34560','Statistics','3'),
-        ('11203','Calculus I','4'),
-        ('87654','English','3'),
-        ('98763','Math','2'),
-        ('23489','Business','4');
+        // enrollment sample data
+        enrollment.insert(List.of(
+                new Cell(124972459),
+                new Cell(1234),
+                new Cell(12389),
+                new Cell("C+")));
+        enrollment.insert(List.of(
+                new Cell(195234580),
+                new Cell(1234),
+                new Cell(56780),
+                new Cell("A")));
+        enrollment.insert(List.of(
+                new Cell(198524751),
+                new Cell(9876540),
+                new Cell(11203),
+                new Cell("F")));
+        enrollment.insert(List.of(
+                new Cell(112351464),
+                new Cell(9876540),
+                new Cell(12389),
+                new Cell("C")));
+        enrollment.insert(List.of(
+                new Cell(234567890),
+                new Cell(9876540),
+                new Cell(87654),
+                new Cell("B")));
+        enrollment.insert(List.of(
+                new Cell(123765098),
+                new Cell(9876540),
+                new Cell(23489),
+                new Cell("A")));
+        enrollment.insert(List.of(
+                new Cell(345675432),
+                new Cell(2345678),
+                new Cell(87654),
+                new Cell("B+")));
 
-        INSERT INTO Enrollment (EnrollmentID, StudentID, CourseID, grade)
-        VALUES
-                ('124972459','1234','12389', 'C+'),
-                ('195234580','1234','56780', 'A'),
-        ('198524751','0987654','11203', 'F'),
-        ('112351464','0987654','12389', 'C'),
-        ('234567890','0987654','87654', 'B'),
-        ('123765098','0987654','23489','A'),
-        ('345675432','2345678','87654','B+');
+        // professors sample data
+        professors.insert(List.of(
+                new Cell(1246819),
+                new Cell("Samantha"),
+                new Cell("Miller"),
+                new Cell("Computer Science")));
+        professors.insert(List.of(
+                new Cell(1235158),
+                new Cell("Jonathon"),
+                new Cell("Brown"),
+                new Cell("Computer Science")));
+        professors.insert(List.of(
+                new Cell(1458189),
+                new Cell("Bill"),
+                new Cell("Davis"),
+                new Cell("Mathematics")));
+        professors.insert(List.of(
+                new Cell(6882910),
+                new Cell("Diana"),
+                new Cell("Williams"),
+                new Cell("Psychology")));
+        professors.insert(List.of(
+                new Cell(1236547),
+                new Cell("Richard"),
+                new Cell("Feynman"),
+                new Cell("Physics")));
+        professors.insert(List.of(
+                new Cell(7653459),
+                new Cell("Alexander"),
+                new Cell("Fleming"),
+                new Cell("Biology")));
+        professors.insert(List.of(
+                new Cell(2345436),
+                new Cell("Alexander"),
+                new Cell("Hamilton"),
+                new Cell("Finance")));
 
-        INSERT INTO Professors(ProfessorID,FName,LName,department)
-        VALUES
-                ('1246819','Samantha','Miller', 'Computer Science'),
-                ('1235158','Jonathon','Brown', 'Computer Science'),
-        ('1458189','Bill','Davis', 'Mathematics'),
-        ('6882910','Diana','Williams', 'Psychology'),
-        ('1236547','Richard','Feynman', 'Physics'),
-        ('7653459','Alexander','Fleming','Biology'),
-        ('2345436','Alexander','Hamilton','Finance');
-
-        INSERT INTO Teaches(TeachID,ProfessorID,CourseID)
-        VALUES
-                ('100','1458189','11203'),
-                ('101','1246819','12389'),
-        ('200','6882910','34560'),
-        ('201','1235158','34560'),
-        ('765','1236547','98763'),
-        ('345','7653459',NULL),
-        ('436','2345436','98763');
-
-
+        // teaches sample data
+        teaches.insert(List.of(
+                new Cell(100),
+                new Cell(1458189),
+                new Cell(11203)));
+        teaches.insert(List.of(
+                new Cell(101),
+                new Cell(1246819),
+                new Cell(12389)));
+        teaches.insert(List.of(
+                new Cell(200),
+                new Cell(6882910),
+                new Cell(34560)));
+        teaches.insert(List.of(
+                new Cell(201),
+                new Cell(1235158),
+                new Cell(34560)));
+        teaches.insert(List.of(
+                new Cell(765),
+                new Cell(1236547),
+                new Cell(98763)));
+        teaches.insert(List.of(
+                new Cell(436),
+                new Cell(2345436),
+                new Cell(98763)));
 
         Relation empty = new RelationImpl("EmptySet", new ArrayList<String>(), new ArrayList<Type>());
         empty.print();
