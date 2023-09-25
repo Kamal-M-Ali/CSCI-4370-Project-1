@@ -118,7 +118,30 @@ public class RAImpl implements RA {
 
     @Override
     public Relation rename(Relation rel, List<String> origAttr, List<String> renamedAttr) {
-        return null;
+        if (origAttr.size() != renamedAttr.size())
+            throw new IllegalArgumentException();
+
+        List<String> attrs = new ArrayList<>();
+        int renamed = 0;
+
+        for (String attr : rel.getAttrs()) {
+            int replaced = origAttr.indexOf(attr);
+            if (replaced != -1) {
+                attrs.add(renamedAttr.get(replaced));
+                ++renamed;
+            } else {
+                attrs.add(attr);
+            }
+        }
+
+        if (origAttr.size() != renamed) // there were excess arguments in orig not found in relation
+            throw new IllegalArgumentException();
+
+        Relation res = new RelationImpl(rel.getName() + "|Renamed", attrs, rel.getTypes());
+        for (List<Cell> row : rel.getRows())
+            res.insert(row);
+
+        return res;
     }
 
     @Override
