@@ -1,9 +1,6 @@
 package uga.cs4370.mydb.impl;
 
-import uga.cs4370.mydb.Cell;
-import uga.cs4370.mydb.Predicate;
-import uga.cs4370.mydb.RA;
-import uga.cs4370.mydb.Relation;
+import uga.cs4370.mydb.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +17,22 @@ public class RAImpl implements RA {
     }
 
     @Override
-    public Relation project(Relation rel, List<String> attrs) {
-        return null;
+    public Relation project(Relation rel, List<String> attrs)
+    {
+        List<Type> types = new ArrayList<>();
+        for (String attr : attrs) {
+            types.add(rel.getTypes().get(rel.getAttrIndex(attr)));
+        }
+
+        Relation res = new RelationImpl("Project", attrs, types);
+        for (List<Cell> row : rel.getRows()) {
+            List<Cell> newRow = new ArrayList<>();
+            for (String attr : attrs)
+                newRow.add(row.get(rel.getAttrIndex(attr)));
+            res.insert(newRow);
+        }
+
+        return res;
     }
 
     /**
@@ -35,26 +46,26 @@ public class RAImpl implements RA {
     public Relation union(Relation rel1, Relation rel2) throws IllegalArgumentException{
         Relation res = new RelationImpl("Union", rel1.getAttrs(), rel1.getTypes());
         // Check compatible
-        if(rel1.getAttrs().size() == rel2.getAttrs().size()) {
-            // insert rows in Relation 1
+        if (rel1.getAttrs().size() != rel2.getAttrs().size())
+            throw new IllegalArgumentException();
+
+        // insert rows in Relation 1
+        for (List<Cell> row1 : rel1.getRows()) {
+            res.insert(row1);
+        }
+        // find the unrepeated rows
+        for (List<Cell> row2 : rel2.getRows()) {
+            boolean isRepeat = false;
             for (List<Cell> row1 : rel1.getRows()) {
-                res.insert(row1);
-            }
-            // find the unrepeated rows
-            for (List<Cell> row2 : rel2.getRows()) {
-                boolean isRepeat = false;
-                for (List<Cell> row1 : rel1.getRows()) {
-                    if(row2.equals(row1)) {
-                        isRepeat = true;
-                    }
-                }
-                // insert the unrepeated rows in Relation 2
-                if(isRepeat == false) {
-                    res.insert(row2);
+                if (row2.equals(row1)) {
+                    isRepeat = true;
+                    break;
                 }
             }
-        } else {
-            System.out.println("Sorry, two relation are not compatible.");
+            // insert the unrepeated rows in Relation 2
+            if(!isRepeat) {
+                res.insert(row2);
+            }
         }
         return res;
     }
@@ -71,36 +82,37 @@ public class RAImpl implements RA {
         Relation repeat = new RelationImpl("Repeat", rel1.getAttrs(), rel1.getTypes());
         Relation res = new RelationImpl("Diff", rel1.getAttrs(), rel1.getTypes());
         // Check compatible
-        if(rel1.getAttrs().size() == rel2.getAttrs().size()) {
-            // insert the unique rows in Relation 1
-            for (List<Cell> row1 : rel1.getRows()) {
-                boolean isRepeat = false;
-                for (List<Cell> row2 : rel2.getRows()) {
-                    // find the repeated part
-                    if (row2.equals(row1)) {
-                        isRepeat = true;
-                        repeat.insert(row2);
-                    }
-                }
-                if (isRepeat == false) {
-                    res.insert(row1);
-                }
-            }
-            // insert the unique rows in Relation 2
+        if(rel1.getAttrs().size() != rel2.getAttrs().size())
+            throw new IllegalArgumentException();
+
+        // insert the unique rows in Relation 1
+        for (List<Cell> row1 : rel1.getRows()) {
+            boolean isRepeat = false;
             for (List<Cell> row2 : rel2.getRows()) {
-                boolean isRepeat = false;
-                for (List<Cell> row3 : repeat.getRows()) {
-                    if (row2.equals(row3)) {
-                        isRepeat = true;
-                    }
-                }
-                if (isRepeat == false) {
-                    res.insert(row2);
+                // find the repeated part
+                if (row2.equals(row1)) {
+                    isRepeat = true;
+                    repeat.insert(row2);
                 }
             }
-        } else {
-            System.out.println("Sorry, two relation are not compatible.");
+            if (!isRepeat) {
+                res.insert(row1);
+            }
         }
+        // insert the unique rows in Relation 2
+        for (List<Cell> row2 : rel2.getRows()) {
+            boolean isRepeat = false;
+            for (List<Cell> row3 : repeat.getRows()) {
+                if (row2.equals(row3)) {
+                    isRepeat = true;
+                    break;
+                }
+            }
+            if (!isRepeat) {
+                res.insert(row2);
+            }
+        }
+
         return res;
     }
 
@@ -148,7 +160,7 @@ public class RAImpl implements RA {
                 for (String attr : rel1.getAttrs()) {
                     int index1 = rel1.getAttrs().indexOf(attr);
                     int index2 = rel2.getAttrs().indexOf(attr);
-                    if (!row1.get(index1).getValue().equals(row2.get(index2).getValue())) {
+                    if (!row1.get(index1).getAsString().equals(row2.get(index2).getAsString())) {
                         isMatch = false;
                         break;
                     }
@@ -163,11 +175,11 @@ public class RAImpl implements RA {
         }
 
         return result;
-
     }
 
     @Override
-    public Relation join(Relation rel1, Relation rel2, Predicate p) {
-        return null;
+    public Relation join(Relation rel1, Relation rel2, Predicate p)
+    {
+        return select(cartesianProduct(rel1, rel2), p);
     }
 }

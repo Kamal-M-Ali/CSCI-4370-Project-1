@@ -43,10 +43,22 @@ public class Main
 
         RA unionRA = new RAImpl();
         unionRA.union(test, test3).print();
-        unionRA.union(test, test1).print(); // not compatible
+        try {
+            unionRA.union(test, test1).print(); // not compatible
+        } catch(IllegalArgumentException e) {
+            System.out.println("The relations aren't compatible.");
+        }
 
         RA diffRA = new RAImpl();
         diffRA.diff(test, test3).print();
-        diffRA.diff(test, test1).print(); // not compatible
+        try {
+            diffRA.diff(test, test1).print(); // not compatible
+        } catch(IllegalArgumentException e) {
+            System.out.println("The relations aren't compatible.");
+        }
+
+        ra.cartesianProduct(test, test3).print();
+        ra.project(test3, List.of("Name")).print();
+        //ra.join(test, test).print();
     }
 }

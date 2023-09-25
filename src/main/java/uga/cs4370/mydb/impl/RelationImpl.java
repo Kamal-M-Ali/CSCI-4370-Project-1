@@ -126,8 +126,7 @@ public class RelationImpl implements Relation {
         System.out.printf((format) + "%n", attrs.toArray());
         System.out.println(separator);
 
-        // generate the table string
-        StringBuilder table = new StringBuilder();
+        // print the table body
         if (rows.isEmpty()) {
             // only print the formatted empty set string
             int padding = (separator.length() - 11) / 2; // subtract length of "|Empty set|"
@@ -136,14 +135,13 @@ public class RelationImpl implements Relation {
             // odd num + even num = odd number, then need additional white space because of integer division
             System.out.println("|" + pad + "Empty set" + pad + (separator.length() % 2 == 0 ? " |" : "|") );
         } else {
+            StringBuilder table = new StringBuilder();
             // append each row to the table string
             for (int i = 0; i < rows.size(); ++i) {
                 table.append(String.format(format, rows.get(i).toArray()));
                 if (i + 1 != rows.size())
                     table.append("\n");
             }
-
-            // print the table body
             System.out.println(table);
         }
 
