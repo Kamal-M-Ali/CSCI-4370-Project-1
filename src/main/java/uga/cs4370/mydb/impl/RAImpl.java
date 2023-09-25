@@ -111,12 +111,59 @@ public class RAImpl implements RA {
 
     @Override
     public Relation cartesianProduct(Relation rel1, Relation rel2) {
-        return null;
+        List<String> resultAttrs = new ArrayList<>(rel1.getAttrs());
+        resultAttrs.addAll(rel2.getAttrs());
+
+        List<Type> resultTypes = new ArrayList<>(rel1.getTypes());
+        resultTypes.addAll(rel2.getTypes());
+
+        Relation result = new RelationImpl("CartesianProduct", resultAttrs, resultTypes);
+
+        if (!rel1.getAttrs().isEmpty() && !rel2.getAttrs().isEmpty()) {
+            for (List<Cell> row1 : rel1.getRows()) {
+                for (List<Cell> row2 : rel2.getRows()) {
+                    List<Cell> productRow = new ArrayList<>(row1);
+                    productRow.addAll(row2);
+                    result.insert(productRow);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
     public Relation join(Relation rel1, Relation rel2) {
-        return null;
+        List<String> resultAttrs = new ArrayList<>(rel1.getAttrs());
+        resultAttrs.addAll(rel2.getAttrs());
+
+        List<Type> resultTypes = new ArrayList<>(rel1.getTypes());
+        resultTypes.addAll(rel2.getTypes());
+
+        Relation result = new RelationImpl("JoinedRelation", resultAttrs, resultTypes);
+
+        for (List<Cell> row1 : rel1.getRows()) {
+            for (List<Cell> row2 : rel2.getRows()) {
+                boolean isMatch = true;
+
+                for (String attr : rel1.getAttrs()) {
+                    int index1 = rel1.getAttrs().indexOf(attr);
+                    int index2 = rel2.getAttrs().indexOf(attr);
+                    if (!row1.get(index1).getValue().equals(row2.get(index2).getValue())) {
+                        isMatch = false;
+                        break;
+                    }
+                }
+
+                if (isMatch) {
+                    List<Cell> joinedRow = new ArrayList<>(row1);
+                    joinedRow.addAll(row2);
+                    result.insert(joinedRow);
+                }
+            }
+        }
+
+        return result;
+
     }
 
     @Override
