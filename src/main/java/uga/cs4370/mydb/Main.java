@@ -10,12 +10,46 @@ public class Main
 {
     public static void main(String[] args)
     {
+        /* SCHEMA DEFINITION FROM ASSIGNMENT 1
+        Students(StudentID<pk>, FName, LName, DoB, Major)
+        Courses(CourseID<pk>, CName, Credits)
+        Enrollment(EnrollmentID<pk>, StudentID<fk>, CourseID<fk>, grade)
+        Professors(ProfessorID<pk>, FName, LName, department)
+        Teaches(TeachID<pk>, ProfessorID<fk>, CourseID<fk>
+         */
+
+        Relation students = new RelationImpl("Students",
+                List.of("StudentID", "FName", "LName", "DoB", "Major"),
+                List.of(Type.INTEGER, Type.STRING, Type.STRING, Type.STRING, Type.STRING));
+
+        Relation courses = new RelationImpl("Courses",
+                List.of("CourseID", "CName", "Credits"),
+                List.of(Type.INTEGER, Type.STRING, Type.INTEGER));
+
+        Relation enrollment = new RelationImpl("Enrollment",
+                List.of("EnrollmentID", "StudentID", "CourseID", "grade"),
+                List.of(Type.INTEGER, Type.INTEGER, Type.INTEGER, Type.STRING));
+
+        Relation professors = new RelationImpl("Professors",
+                List.of("ProfessorID", "FName", "LName", "department"),
+                List.of(Type.INTEGER, Type.STRING, Type.STRING, Type.STRING));
+
+        Relation teaches = new RelationImpl("Teaches",
+                List.of("TeachID", "ProfessorID", "CourseID"),
+                List.of(Type.INTEGER, Type.STRING, Type.STRING));
+
+
         Relation empty = new RelationImpl("EmptySet", new ArrayList<String>(), new ArrayList<Type>());
         empty.print();
 
+
+
+
+
+
         Relation test = new RelationImpl("Test",
-                new ArrayList<String>(List.of("ID", "Name")),
-                new ArrayList<Type>(List.of(Type.INTEGER, Type.STRING)));
+                List.of("ID", "Name"),
+                List.of(Type.INTEGER, Type.STRING));
         test.print();
 
         test.insert(new Cell(1234), new Cell("Jane Doe"));
@@ -23,8 +57,8 @@ public class Main
         test.print();
 
         Relation test1 = new RelationImpl("Test1",
-                new ArrayList<String>(List.of("ID", "Name", "Dept")),
-                new ArrayList<Type>(List.of(Type.INTEGER, Type.STRING, Type.STRING)));
+                List.of("ID", "Name", "Dept"),
+                List.of(Type.INTEGER, Type.STRING, Type.STRING));
         test1.print();
 
         Relation test3 = new RelationImpl("Test3",
