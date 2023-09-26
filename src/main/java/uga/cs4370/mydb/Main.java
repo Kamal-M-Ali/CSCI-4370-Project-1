@@ -329,7 +329,19 @@ public class Main
                 courses
         ).print();
 
+        // show all courses a professor is teaching
         ra.join(professors, teaches).print();
+
+        // get all students who got an A in a course
+        Relation studentRe = ra.rename(students, List.of("StudentID"), List.of("SID"));
+        List<String> studentEnrollmentAttrs = new ArrayList<>(studentRe.getAttrs());
+        studentEnrollmentAttrs.addAll(enrollment.getAttrs());
+        ra.join(studentRe,
+                enrollment,
+                (List<Cell> row) ->
+                        row.get(studentEnrollmentAttrs.indexOf("SID")).equals(row.get(studentEnrollmentAttrs.indexOf("StudentID")))
+                        && row.get(studentEnrollmentAttrs.indexOf("grade")).toString().equals("A")
+                ).print();
 
         // get students course enrollment
         /*

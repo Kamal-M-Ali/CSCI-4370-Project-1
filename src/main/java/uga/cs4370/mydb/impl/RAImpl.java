@@ -235,6 +235,26 @@ public class RAImpl implements RA {
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p)
     {
-        return select(cartesianProduct(rel1, rel2), p);
+        // cartesian product function but add a predicate check before inserting the row
+        List<String> resultAttrs = new ArrayList<>(rel1.getAttrs());
+        resultAttrs.addAll(rel2.getAttrs());
+
+        List<Type> resultTypes = new ArrayList<>(rel1.getTypes());
+        resultTypes.addAll(rel2.getTypes());
+
+        Relation result = new RelationImpl("CartesianProduct", resultAttrs, resultTypes);
+
+        if (!rel1.getAttrs().isEmpty() && !rel2.getAttrs().isEmpty()) {
+            for (List<Cell> row1 : rel1.getRows()) {
+                for (List<Cell> row2 : rel2.getRows()) {
+                    List<Cell> productRow = new ArrayList<>(row1);
+                    productRow.addAll(row2);
+
+                    if (p.check(productRow))
+                        result.insert(productRow);
+                }
+            }
+        }
+        return result;
     }
 }
