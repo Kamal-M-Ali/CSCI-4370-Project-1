@@ -18,6 +18,7 @@ public class Main
         Teaches(TeachID<pk>, ProfessorID<fk>, CourseID<fk>
          */
 
+        RA ra = new RAImpl();
         Relation students = new RelationImpl("Students",
                 List.of("StudentID", "FName", "LName", "DoB", "Major"),
                 List.of(Type.INTEGER, Type.STRING, Type.STRING, Type.STRING, Type.STRING));
@@ -36,7 +37,7 @@ public class Main
 
         Relation teaches = new RelationImpl("Teaches",
                 List.of("TeachID", "ProfessorID", "CourseID"),
-                List.of(Type.INTEGER, Type.STRING, Type.STRING));
+                List.of(Type.INTEGER, Type.INTEGER, Type.INTEGER));
 
         // student sample data
         students.insert(List.of(
@@ -212,12 +213,82 @@ public class Main
                 new Cell(2345436),
                 new Cell(98763)));
 
+        System.out.println("Testing exception handling:");
+        // trying to input duplicate row
+        try {
+            teaches.insert(List.of(
+                    new Cell(436),
+                    new Cell(2345436),
+                    new Cell(98763)));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // trying to get attribute that doesnt exist
+        try {
+            teaches.getAttrIndex("NOTHING");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // insert empty list
+        try {
+            teaches.insert();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // insert into relation with no attributes
+        try {
+            Relation empty = new RelationImpl("Empty", List.of(), List.of());
+            empty.insert();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // inserting with cell mismatch
+        try {
+            teaches.insert(List.of(
+                    new Cell(436),
+                    new Cell(2345436),
+                    new Cell(98763),
+                    new Cell("NOTHING")));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // rename attribute doesnt exist
+        try {
+            ra.rename(teaches, List.of("This doesnt exist"), List.of("Something random"));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // project attribute doesnt exist
+        try {
+            ra.project(teaches, List.of("This doesnt exist"));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // diff incompatible
+        try {
+            ra.diff(teaches, students);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // union incompatible
+        try {
+            ra.union(teaches, students);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        /*
         Relation empty = new RelationImpl("EmptySet", new ArrayList<String>(), new ArrayList<Type>());
         empty.print();
-
-
-
-
 
 
         Relation test = new RelationImpl("Test",
@@ -267,6 +338,6 @@ public class Main
         ra.cartesianProduct(test, test3).print();
         ra.project(test3, List.of("Name")).print();
         ra.rename(test3, List.of("Name"), List.of("Full Name")).print();
-        ra.join(test, test).print();
+        ra.join(test, test).print();*/
     }
 }

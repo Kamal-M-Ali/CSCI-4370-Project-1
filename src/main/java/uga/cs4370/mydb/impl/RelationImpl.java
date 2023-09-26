@@ -62,8 +62,11 @@ public class RelationImpl implements Relation {
     @Override
     public void insert(Cell... cells) throws IllegalArgumentException {
         if (attrs.isEmpty() || types.isEmpty())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Insert into empty set");
         List<Cell> row = new ArrayList<>();
+
+        if (cells.length != attrs.size())
+            throw new IllegalArgumentException("Not enough cells to insert into row");
 
         for (int i = 0; i < cells.length; i++) {
             if (cells[i].getType() != types.get(i))
@@ -76,8 +79,11 @@ public class RelationImpl implements Relation {
     @Override
     public void insert(List<Cell> cells) throws IllegalArgumentException {
         if (attrs.isEmpty() || types.isEmpty())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Insert into empty set");
         List<Cell> row = new ArrayList<>();
+
+        if (cells.size() != attrs.size())
+            throw new IllegalArgumentException("Not enough cells to insert into row");
 
         for (int i = 0; i < cells.size(); i++) {
             if (cells.get(i).getType() != types.get(i))
