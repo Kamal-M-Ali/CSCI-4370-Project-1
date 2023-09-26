@@ -81,7 +81,7 @@ public class Main
                 new Cell("Wash"),
                 new Cell("Cherry"),
                 new Cell("1987-07-06"),
-                new Cell("'Psychology'")));
+                new Cell("Psychology")));
 
         // courses sample data
         courses.insert(List.of(
@@ -297,65 +297,37 @@ public class Main
         System.out.println();
 
 
-        // get all students with whose first name is jane
-        ra.select(students, (List<Cell> row) ->
-                row.get(students.getAttrIndex("FName")).getAsString().equals("Jane")).print();
+        // get all courses with credit hours less than 4
+        ra.select(courses, (List<Cell> row) ->
+                row.get(courses.getAttrIndex("Credits")).getAsInt() < 4).print();
 
         // list all students by id and major
         ra.project(students, List.of("StudentID", "Major")).print();
 
-        /*
-        Relation empty = new RelationImpl("EmptySet", new ArrayList<String>(), new ArrayList<Type>());
-        empty.print();
+        // rename DoB attribute to Date of Birth
+        students.print();
+        ra.rename(students, List.of("DoB"), List.of("Date of Birth")).print();
 
+        // all student who major in computer science or finance
+        ra.union(
+                ra.select(students, (List<Cell> row) ->
+                        row.get(students.getAttrIndex("Major")).getAsString().equals("Computer Science")),
+                ra.select(students, (List<Cell> row) ->
+                        row.get(students.getAttrIndex("Major")).getAsString().equals("Finance"))
+        ).print();
 
-        Relation test = new RelationImpl("Test",
-                List.of("ID", "Name"),
-                List.of(Type.INTEGER, Type.STRING));
-        test.print();
+        // all student who dont major in computer science
+        ra.diff(
+                ra.select(students, (List<Cell> row) ->
+                        row.get(students.getAttrIndex("Major")).getAsString().equals("Computer Science")),
+                students
+        ).print();
 
-        test.insert(new Cell(1234), new Cell("Jane Doe"));
-        test.insert(new Cell(2234), new Cell("John Doe"));
-        test.print();
-
-        Relation test1 = new RelationImpl("Test1",
-                List.of("ID", "Name", "Dept"),
-                List.of(Type.INTEGER, Type.STRING, Type.STRING));
-        test1.print();
-
-        Relation test3 = new RelationImpl("Test3",
-                new ArrayList<String>(List.of("ID", "Name")),
-                new ArrayList<Type>(List.of(Type.INTEGER, Type.STRING)));
-        test3.print();
-
-        test3.insert(new Cell(1234), new Cell("Jane Doe"));
-        test3.insert(new Cell(3001), new Cell("Ada Doe"));
-        test3.insert(new Cell(3002), new Cell("Anna Doe"));
-        test3.print();
-
-        RA ra = new RAImpl();
-        ra.select(test, (List<Cell> row) -> row.contains(new Cell("Jane Doe"))).print();
-        ra.select(test, (List<Cell> row) -> row.get(test.getAttrIndex("Name")).getAsString().equals("Jane Doe")).print();
-
-        RA unionRA = new RAImpl();
-        unionRA.union(test, test3).print();
-        try {
-            unionRA.union(test, test1).print(); // not compatible
-        } catch(IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-
-        RA diffRA = new RAImpl();
-        diffRA.diff(test, test3).print();
-        try {
-            diffRA.diff(test, test1).print(); // not compatible
-        } catch(IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-
-        ra.cartesianProduct(test, test3).print();
-        ra.project(test3, List.of("Name")).print();
-        ra.rename(test3, List.of("Name"), List.of("Full Name")).print();
-        ra.join(test, test).print();*/
+        // all possible courses Jane Doe can take
+        ra.cartesianProduct(
+                ra.select(students, (List<Cell> row)
+                        -> row.get(students.getAttrIndex("FName")).getAsString().equals("Jane")),
+                courses
+        ).print();
     }
 }

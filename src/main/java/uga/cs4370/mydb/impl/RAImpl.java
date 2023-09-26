@@ -9,7 +9,7 @@ public class RAImpl implements RA {
     @Override
     public Relation select(Relation rel, Predicate p)
     {
-        Relation res = new RelationImpl(rel.getName(), rel.getAttrs(), rel.getTypes());
+        Relation res = new RelationImpl("Select", rel.getAttrs(), rel.getTypes());
         for (List<Cell> row : rel.getRows()) {
             if (p.check(row))
                 res.insert(row);
@@ -142,7 +142,7 @@ public class RAImpl implements RA {
         if (origAttr.size() != renamed)
             throw new IllegalArgumentException("Attributes to rename not found in original relation.");
 
-        Relation res = new RelationImpl(rel.getName() + "|Renamed", attrs, rel.getTypes());
+        Relation res = new RelationImpl("Renamed", attrs, rel.getTypes());
         for (List<Cell> row : rel.getRows())
             res.insert(row);
 
