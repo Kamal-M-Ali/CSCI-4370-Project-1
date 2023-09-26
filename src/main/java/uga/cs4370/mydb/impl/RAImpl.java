@@ -2,8 +2,7 @@ package uga.cs4370.mydb.impl;
 
 import uga.cs4370.mydb.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RAImpl implements RA {
     @Override
@@ -37,13 +36,6 @@ public class RAImpl implements RA {
         return res;
     }
 
-    /**
-     *
-     * @param rel1
-     * @param rel2
-     * @return The resulting relation after applying the union operation.
-     * @throws IllegalArgumentException //If rel1 and rel2 are not compatible.
-     */
     @Override
     public Relation union(Relation rel1, Relation rel2) throws IllegalArgumentException
     {
@@ -73,13 +65,6 @@ public class RAImpl implements RA {
         return res;
     }
 
-    /**
-     *
-     * @param rel1
-     * @param rel2
-     * @return The resulting relation after applying the diff operation.
-     * @throws IllegalArgumentException //If rel1 and rel2 are not compatible.
-     */
     @Override
     public Relation diff(Relation rel1, Relation rel2) throws IllegalArgumentException
     {
@@ -179,36 +164,72 @@ public class RAImpl implements RA {
 
     @Override
     public Relation join(Relation rel1, Relation rel2) {
-        List<String> resultAttrs = new ArrayList<>(rel1.getAttrs());
-        resultAttrs.addAll(rel2.getAttrs());
+        // get attributes outside of array since it has to copy everytime
+        List<String> rel1Attrs = rel1.getAttrs();
+        List<String> rel2Attrs = rel2.getAttrs();
+        List<Type> rel2Types = rel2.getTypes();
 
-        List<Type> resultTypes = new ArrayList<>(rel1.getTypes());
-        resultTypes.addAll(rel2.getTypes());
+        // build attribute and type table
+        List<String> attrs = new ArrayList<>(rel1Attrs);
+        List<Type> types = new ArrayList<>(rel1.getTypes());
 
-        Relation result = new RelationImpl("JoinedRelation", resultAttrs, resultTypes);
+        // also need a list of common attributes and their indices in the respective relations
+        List<String> common = new ArrayList<>();
+        HashMap<String, Integer> rel1AttrMap = new HashMap<>();
+        HashMap<String, Integer> rel2AttrMap = new HashMap<>();
+
+        for (int i = 0; i != rel2Attrs.size(); ++i) {
+            String attr = rel2Attrs.get(i);
+            if (!attrs.contains(attr)) {
+                attrs.add(attr);
+                types.add(rel2Types.get(i));
+            } else {
+                common.add(attr);
+                rel1AttrMap.put(attr, rel1.getAttrIndex(attr));
+                rel2AttrMap.put(attr, i);
+            }
+        }
+
+        Relation res = new RelationImpl("NaturalJoin",
+                new ArrayList<>(attrs),
+                new ArrayList<>(types));
+
+        if (common.isEmpty())
+            return res;
 
         for (List<Cell> row1 : rel1.getRows()) {
             for (List<Cell> row2 : rel2.getRows()) {
                 boolean isMatch = true;
 
-                for (String attr : rel1.getAttrs()) {
-                    int index1 = rel1.getAttrs().indexOf(attr);
-                    int index2 = rel2.getAttrs().indexOf(attr);
-                    if (!row1.get(index1).equals(row2.get(index2))) {
+                for (String attr : common) {
+                    Integer i = rel1AttrMap.get(attr);
+                    Integer j = rel2AttrMap.get(attr);
+
+                    if (!row1.get(i).equals(row2.get(j))) {
                         isMatch = false;
                         break;
                     }
                 }
 
                 if (isMatch) {
-                    List<Cell> joinedRow = new ArrayList<>(row1);
-                    joinedRow.addAll(row2);
-                    result.insert(joinedRow);
+                    List<Cell> row = new ArrayList<>();
+                    for (String attr : attrs) {
+                        int i = rel1Attrs.indexOf(attr);
+                        if (i != -1) {
+                            row.add(row1.get(i));
+                        } else {
+                            // must be in relation 2
+                            row.add(row2.get(rel2Attrs.indexOf(attr)));
+                        }
+                    }
+
+                    // insert the new row
+                    res.insert(row);
                 }
             }
         }
 
-        return result;
+        return res;
     }
 
     @Override

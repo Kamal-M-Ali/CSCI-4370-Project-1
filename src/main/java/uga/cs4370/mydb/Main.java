@@ -305,7 +305,6 @@ public class Main
         ra.project(students, List.of("StudentID", "Major")).print();
 
         // rename DoB attribute to Date of Birth
-        students.print();
         ra.rename(students, List.of("DoB"), List.of("Date of Birth")).print();
 
         // all student who major in computer science or finance
@@ -329,5 +328,17 @@ public class Main
                         -> row.get(students.getAttrIndex("FName")).getAsString().equals("Jane")),
                 courses
         ).print();
+
+        ra.join(professors, teaches).print();
+
+        // get students course enrollment
+        /*
+        ra.join(
+                ra.rename(students, List.of("StudentID"), List.of("SID")),
+                enrollment,
+                (List<Cell> row) ->
+                        row.get(students.getAttrIndex("StudentID")).getAsInt()
+                                == row.get(enrollment.getAttrIndex("StudentId")).getAsInt()
+                ).print();*/
     }
 }
