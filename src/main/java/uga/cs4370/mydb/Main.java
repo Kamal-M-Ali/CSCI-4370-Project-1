@@ -332,25 +332,20 @@ public class Main
         // show all courses a professor is teaching
         ra.join(professors, teaches).print();
 
-        // get all students who got an A in a course
+
+        // rename studentid attribute
         Relation studentRe = ra.rename(students, List.of("StudentID"), List.of("SID"));
+
+        // build new attribute list for after join
         List<String> studentEnrollmentAttrs = new ArrayList<>(studentRe.getAttrs());
         studentEnrollmentAttrs.addAll(enrollment.getAttrs());
+
+        // get all students who got an A in a course
         ra.join(studentRe,
                 enrollment,
                 (List<Cell> row) ->
                         row.get(studentEnrollmentAttrs.indexOf("SID")).equals(row.get(studentEnrollmentAttrs.indexOf("StudentID")))
                         && row.get(studentEnrollmentAttrs.indexOf("grade")).toString().equals("A")
                 ).print();
-
-        // get students course enrollment
-        /*
-        ra.join(
-                ra.rename(students, List.of("StudentID"), List.of("SID")),
-                enrollment,
-                (List<Cell> row) ->
-                        row.get(students.getAttrIndex("StudentID")).getAsInt()
-                                == row.get(enrollment.getAttrIndex("StudentId")).getAsInt()
-                ).print();*/
     }
 }
