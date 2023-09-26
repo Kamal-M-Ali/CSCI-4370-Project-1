@@ -214,6 +214,6 @@ public class RAImpl implements RA {
     @Override
     public Relation join(Relation rel1, Relation rel2, Predicate p)
     {
-        return null;
+        return select(cartesianProduct(rel1, rel2), p);
     }
 }

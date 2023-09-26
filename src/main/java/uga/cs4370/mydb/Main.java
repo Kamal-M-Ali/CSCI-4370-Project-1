@@ -257,6 +257,16 @@ public class Main
             System.out.println(e.getMessage());
         }
 
+        // inserting with cell mismatch
+        try {
+            teaches.insert(List.of(
+                    new Cell(436),
+                    new Cell(2345436),
+                    new Cell("98763")));
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
         // rename attribute doesnt exist
         try {
             ra.rename(teaches, List.of("This doesnt exist"), List.of("Something random"));
@@ -285,6 +295,14 @@ public class Main
             System.out.println(e.getMessage());
         }
         System.out.println();
+
+
+        // get all students with whose first name is jane
+        ra.select(students, (List<Cell> row) ->
+                row.get(students.getAttrIndex("FName")).getAsString().equals("Jane")).print();
+
+        // list all students by id and major
+        ra.project(students, List.of("StudentID", "Major")).print();
 
         /*
         Relation empty = new RelationImpl("EmptySet", new ArrayList<String>(), new ArrayList<Type>());

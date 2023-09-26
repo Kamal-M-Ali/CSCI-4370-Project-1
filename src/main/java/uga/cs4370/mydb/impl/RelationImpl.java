@@ -69,8 +69,19 @@ public class RelationImpl implements Relation {
             throw new IllegalArgumentException("Not enough cells to insert into row");
 
         for (int i = 0; i < cells.length; i++) {
-            if (cells[i].getType() != types.get(i))
+            // since no adding get type method to cell class
+            // check every corresponding getter of excepted type
+            // if a runtime exception is thrown then throw an illegalargumentexception
+            try {
+                if (types.get(i) == Type.INTEGER)
+                    cells[i].getAsInt();
+                else if (types.get(i) == Type.DOUBLE)
+                    cells[i].getAsDouble();
+                else
+                    cells[i].getAsString();
+            } catch (Exception e) {
                 throw new IllegalArgumentException("Insert cell type mismatch.");
+            }
             row.add(cells[i]);
         }
         insertWithCheck(row);
@@ -86,8 +97,19 @@ public class RelationImpl implements Relation {
             throw new IllegalArgumentException("Not enough cells to insert into row");
 
         for (int i = 0; i < cells.size(); i++) {
-            if (cells.get(i).getType() != types.get(i))
+            // since no adding get type method to cell class
+            // check every corresponding getter of excepted type
+            // if a runtime exception is thrown then throw an illegalargumentexception
+            try {
+                if (types.get(i) == Type.INTEGER)
+                    cells.get(i).getAsInt();
+                else if (types.get(i) == Type.DOUBLE)
+                    cells.get(i).getAsDouble();
+                else
+                    cells.get(i).getAsString();
+            } catch (Exception e) {
                 throw new IllegalArgumentException("Insert cell type mismatch.");
+            }
             row.add(cells.get(i));
         }
         insertWithCheck(row);
@@ -102,10 +124,9 @@ public class RelationImpl implements Relation {
 
         // get the largest size of each element in each row
         int[] length = new int[attrs.size()];
-        if (rows.isEmpty()) {
-            for (int i = 0; i < attrs.size(); ++i)
-                length[i] = attrs.get(i).length();
-        } else {
+        for (int i = 0; i < attrs.size(); ++i)
+            length[i] = attrs.get(i).length();
+        if (!rows.isEmpty()) {
             for (List<Cell> row : rows) {
                 for (int i = 0; i < row.size(); ++i)
                     length[i] = Math.max(length[i], row.get(i).toString().length());

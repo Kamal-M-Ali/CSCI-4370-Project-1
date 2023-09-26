@@ -4,7 +4,7 @@ package uga.cs4370.mydb;
  * Represents a cell in a row of a relation.
  */
 public class Cell {
-    
+
     private Object data;
     private Type type;
 
@@ -30,13 +30,6 @@ public class Cell {
     public Cell(String data) {
         this.data = data;
         this.type = Type.STRING;
-    }
-
-    /**
-     * Returns the type of the cell.
-     */
-    public Type getType() {
-        return type;
     }
 
     /**
